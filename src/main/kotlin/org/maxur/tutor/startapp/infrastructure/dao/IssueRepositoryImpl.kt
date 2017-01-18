@@ -3,6 +3,7 @@ package org.maxur.tutor.startapp.infrastructure.dao
 import org.maxur.tutor.startapp.domain.Issue
 import org.maxur.tutor.startapp.domain.IssueRepository
 import org.springframework.stereotype.Repository
+import java.util.*
 
 /**
  * @author myunusov
@@ -12,7 +13,11 @@ import org.springframework.stereotype.Repository
 @Repository
 open class IssueRepositoryImpl : IssueRepository {
 
-    private val list = Array(3, { i -> Issue(i.toString(), "issue " + i.toString(), "test") }).asList()
+    private val list = ArrayList(Array(3, { i -> Issue(i.toString(), "issue " + i.toString(), "test") }).asList())
+
+    override fun add(issue: Issue) {
+       list.add(issue)
+    }
 
     override fun findAll(): List<Issue> {
         return list

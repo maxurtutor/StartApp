@@ -5,9 +5,10 @@ import org.maxur.tutor.startapp.domain.IssueRepository
 import org.springframework.hateoas.Resource
 import org.springframework.hateoas.Resources
 import org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo
+import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-
 
 /**
  * @author myunusov
@@ -32,12 +33,6 @@ open class IssueResourceController(val repository: IssueRepository) {
         return ResponseEntity.ok(resources)
     }
 
-    private fun buildResource(issue: Issue): Resource<Issue> {
-        val link = linkTo(IssueResourceController::class.java).slash(issue.id).withSelfRel()
-        val result = Resource(issue, link.expand(issue.id))
-        return result;
-    }
-
     @ResponseBody
     @GetMapping("/{id}", produces = arrayOf("application/hal+json"))
     fun get(@PathVariable id : String): ResponseEntity<Resource<Issue>> {
@@ -45,6 +40,23 @@ open class IssueResourceController(val repository: IssueRepository) {
         return ResponseEntity.ok(this.buildResource(issue))
     }
 
+    @ResponseBody
+    @PostMapping("", produces = arrayOf("application/hal+json"), consumes = arrayOf("application/json"))
+    fun add(@RequestBody issue: Issue): ResponseEntity<Resource<Issue>>{
+        repository.add(issue)
+        val headers: HttpHeaders = HttpHeaders()
+        headers.add(
+                HttpHeaders.LOCATION,
+                linkTo(IssueResourceController::class.java).slash(issue.id).withSelfRel().expand(issue.id).href
+        )
+        return ResponseEntity(buildResource(issue), headers, HttpStatus.CREATED)
+    }
+
+    private fun buildResource(issue: Issue): Resource<Issue> {
+        val link = linkTo(IssueResourceController::class.java).slash(issue.id).withSelfRel()
+        val result = Resource(issue, link.expand(issue.id))
+        return result;
+    }
 
 }
 
