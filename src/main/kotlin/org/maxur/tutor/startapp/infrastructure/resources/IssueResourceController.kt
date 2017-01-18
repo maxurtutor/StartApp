@@ -2,6 +2,7 @@ package org.maxur.tutor.startapp.infrastructure.resources
 
 import org.maxur.tutor.startapp.domain.Issue
 import org.maxur.tutor.startapp.domain.IssueRepository
+import org.springframework.data.rest.webmvc.ResourceNotFoundException
 import org.springframework.hateoas.Resource
 import org.springframework.hateoas.Resources
 import org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo
@@ -21,23 +22,22 @@ open class IssueResourceController(val repository: IssueRepository) {
 
     @ResponseBody
     @GetMapping("", produces = arrayOf("application/hal+json"))
-    fun findAll(): ResponseEntity<Resources<Resource<Issue>>>? {
+    fun findAll(): Resources<Resource<Issue>>? {
         val issues = repository.findAll()
 
         val list = issues.map {it -> this.buildResource(it)}
 
-        val resources = Resources(
+        return Resources(
                 list,
                 linkTo(IssueResourceController::class.java).withSelfRel()
         )
-        return ResponseEntity.ok(resources)
     }
 
     @ResponseBody
     @GetMapping("/{id}", produces = arrayOf("application/hal+json"))
-    fun get(@PathVariable id : String): ResponseEntity<Resource<Issue>> {
-        val issue = repository.findBy(id)
-        return ResponseEntity.ok(this.buildResource(issue))
+    fun get(@PathVariable id : String): Resource<Issue> {
+        val issue = repository.findBy(id) ?: throw ResourceNotFoundException()
+        return this.buildResource(issue)
     }
 
     @ResponseBody

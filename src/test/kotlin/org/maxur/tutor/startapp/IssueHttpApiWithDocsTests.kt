@@ -49,7 +49,7 @@ class IssueHttpApiWithDocsTests {
 
         resultActions.andExpect(status().isCreated())
 
-        val createdIssue = findCreatedIssue()
+        val createdIssue = findCreatedIssue() ?: throw AssertionError()
 
         resultActions
                 .andExpect(header().string(HttpHeaders.LOCATION, "http://localhost:8080/issues/" + createdIssue.id))
@@ -69,7 +69,7 @@ class IssueHttpApiWithDocsTests {
                 )))
     }
 
-    private fun findCreatedIssue(): Issue {
+    private fun findCreatedIssue(): Issue? {
         return repository.findBy("id")
     }
 

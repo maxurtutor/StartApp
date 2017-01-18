@@ -23,8 +23,8 @@ open class IssueRepositoryImpl : IssueRepository {
         return list
     }
 
-    override fun findBy(id: String): Issue {
-        return list.first { it -> it.id == id }
+    override fun findBy(id: String): Issue? {
+        return list.firstOrNull { it -> it.id == id }
     }
 
 }
