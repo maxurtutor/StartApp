@@ -16,7 +16,7 @@ jdk:
   - oraclejdk8
 
 before_install:
- - chmod +x ./gradle
+ - chmod +x ./gradlew
 
 script:
   - gradle assemble
