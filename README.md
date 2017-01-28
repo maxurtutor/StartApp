@@ -1,4 +1,4 @@
-# org.maxur.tutor.startapp.domain.StartApp
+# Start-App
 It's template of new tutorials and conference demo  
 
 Architecture
