@@ -1,6 +1,8 @@
 buildscript {
     ext {
 		kotlinVersion = '1.0.6'
+		springBootVersion = '1.4.3.RELEASE'
+        dependencyManagementVersion ='0.5.6.RELEASE'
 	}
 	repositories {
 		mavenCentral()
@@ -8,12 +10,16 @@ buildscript {
 	dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
         classpath "org.jetbrains.kotlin:kotlin-allopen:$kotlinVersion"
+        classpath "io.spring.gradle:dependency-management-plugin:$dependencyManagementVersion"
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:$springBootVersion"
     }
 }
 
 apply plugin: "idea"
 apply plugin: 'kotlin'
 apply plugin: 'kotlin-spring'
+apply plugin: 'org.springframework.boot'
+apply plugin: "io.spring.dependency-management"
 
 repositories {
     mavenCentral()
@@ -34,6 +40,8 @@ dependencies {
     //app
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
     compile "org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion"
+    compile "org.springframework.boot:spring-boot-starter-hateoas"
+    runtime "org.springframework.boot:spring-boot-devtools"
 }
 
 task wrapper(type: Wrapper) {
