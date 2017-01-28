@@ -1,0 +1,8 @@
+@startuml
+package startapp {
+    class Project
+    class Issue
+    Project "1" o=-> "*" Issue
+}
+hide members
+@enduml
