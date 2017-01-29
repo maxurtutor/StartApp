@@ -60,6 +60,8 @@ dependencies {
     compile "org.springframework.boot:spring-boot-starter-jooq"
     compile "org.flywaydb:flyway-core"
     runtime "com.h2database:h2"
+    //rest
+    compile "org.springframework.data:spring-data-rest-hal-browser"
 }
 
 task generateDbShemaSource << {

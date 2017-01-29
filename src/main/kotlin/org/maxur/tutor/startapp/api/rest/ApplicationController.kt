@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseBody
 
 
+
 /**
  * Project Resource Controller
  *
@@ -25,7 +26,8 @@ class ApplicationController {
             Resource(
                     Application(),
                     linkTo(ApplicationController::class.java).withSelfRel(),
-                    linkTo(ProjectController::class.java).withRel("projects")
+                    linkTo(ProjectController::class.java).withRel("projects"),
+                    linkTo(ApplicationController::class.java).slash("browser/index.html#/").withRel("hal browser")
             )
 
     @Suppress("unused")
