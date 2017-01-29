@@ -1,6 +1,12 @@
 package org.maxur.tutor.startapp.domain
 
+import org.jooq.DSLContext
+import org.jooq.Record
+import org.jooq.SelectWhereStep
+import org.maxur.tutor.startapp.db.schema.Tables.ISSUES
+import org.maxur.tutor.startapp.db.schema.tables.pojos.Issues
 import org.springframework.stereotype.Repository
+import org.springframework.transaction.annotation.Transactional
 
 /**
  * The Issue repository.
@@ -11,16 +17,17 @@ import org.springframework.stereotype.Repository
  *
  */
 @Repository
-class IssueRepository {
+@Transactional
+open class IssueRepository(val dsl: DSLContext) {
 
-    val element = Issue("1", "Issue-001", "Stub")
+    private val select: SelectWhereStep<Record>
+        get() = this.dsl.select()
+                .from(ISSUES)
 
     fun findOne(id: String): Issue? =
-            // TODO Stub
-            if (id == "1") {
-                element
-            } else {
-                null
-            }
+            select.where(ISSUES.ISSUE_ID.eq(id))
+                    .fetchOneInto(Issues::class.java)
+                    ?.let { record -> Issue(record.issueId, record.name, record.description)}
+
 
 }

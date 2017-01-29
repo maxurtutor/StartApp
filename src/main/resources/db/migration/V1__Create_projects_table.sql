@@ -1,0 +1,5 @@
+CREATE TABLE projects
+(
+  project_id VARCHAR(36) PRIMARY KEY NOT NULL,
+  name VARCHAR(100) UNIQUE NOT NULL
+)
