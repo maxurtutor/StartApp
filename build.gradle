@@ -8,6 +8,7 @@ buildscript {
         dependencyManagementVersion = '0.5.6.RELEASE'
         jooqCodegenVersion = '3.8.6'
         h2databaseVersion = '1.4.193'
+        flywayGradlePluginVersion = '3.2.1'
     }
 	repositories {
         mavenLocal()
@@ -21,7 +22,7 @@ buildscript {
         //db
         classpath "com.h2database:h2:$h2databaseVersion"
         classpath "org.jooq:jooq-codegen:$jooqCodegenVersion"
-        classpath "org.flywaydb:flyway-gradle-plugin:3.2.1"
+        classpath "org.flywaydb:flyway-gradle-plugin:$flywayGradlePluginVersion"
     }
 }
 
