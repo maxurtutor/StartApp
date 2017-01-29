@@ -1,10 +1,16 @@
+import org.jooq.util.GenerationTool
+import org.jooq.util.jaxb.*
+
 buildscript {
     ext {
 		kotlinVersion = '1.0.6'
 		springBootVersion = '1.4.3.RELEASE'
-        dependencyManagementVersion ='0.5.6.RELEASE'
-	}
+        dependencyManagementVersion = '0.5.6.RELEASE'
+        jooqCodegenVersion = '3.8.6'
+        h2databaseVersion = '1.4.193'
+    }
 	repositories {
+        mavenLocal()
 		mavenCentral()
 	}
 	dependencies {
@@ -12,6 +18,10 @@ buildscript {
         classpath "org.jetbrains.kotlin:kotlin-allopen:$kotlinVersion"
         classpath "io.spring.gradle:dependency-management-plugin:$dependencyManagementVersion"
         classpath "org.springframework.boot:spring-boot-gradle-plugin:$springBootVersion"
+        //db
+        classpath "com.h2database:h2:$h2databaseVersion"
+        classpath "org.jooq:jooq-codegen:$jooqCodegenVersion"
+        classpath "org.flywaydb:flyway-gradle-plugin:3.2.1"
     }
 }
 
@@ -20,8 +30,10 @@ apply plugin: 'kotlin'
 apply plugin: 'kotlin-spring'
 apply plugin: 'org.springframework.boot'
 apply plugin: "io.spring.dependency-management"
+apply plugin: "org.flywaydb.flyway"
 
 repositories {
+    mavenLocal()
     mavenCentral()
 }
 
@@ -34,6 +46,7 @@ targetCompatibility = 1.8
 
 sourceSets {
     main.java.srcDirs += 'src/main/kotlin'
+    main.java.srcDirs += 'src/main/db/schema'
 }
 
 dependencies {
@@ -42,8 +55,56 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion"
     compile "org.springframework.boot:spring-boot-starter-hateoas"
     runtime "org.springframework.boot:spring-boot-devtools"
+    //data
+    compile "org.springframework.boot:spring-boot-starter-jooq"
+    compile "org.flywaydb:flyway-core"
+    runtime "com.h2database:h2"
+}
+
+task generateDbShemaSource << {
+    Configuration config =  new Configuration()
+            .withJdbc(
+                new Jdbc()
+                        .withDriver('org.h2.Driver')
+                        .withUrl('jdbc:h2:~/startapp')
+                        .withUser('sa')
+                        .withPassword('')
+
+            ).withGenerator(
+                new Generator()
+                    .withDatabase(
+                        new Database()
+                            .withName('org.jooq.util.h2.H2Database')
+                            .withInputSchema('PUBLIC')
+                    )
+                    .withGenerate(
+                        new Generate()
+                            .withRelations(true)
+                            .withDeprecated(false)
+                            .withRecords(true)
+                            .withImmutablePojos(true)
+                            .withFluentSetters(true)
+                    )
+                    .withTarget(
+                        new Target()
+                            .withPackageName('org.maxur.tutor.startapp.db.schema')
+                            .withDirectory('src/main/db/schema')
+                    )
+            )
+
+    GenerationTool.generate(config)
+}
+
+flyway {
+    url = 'jdbc:h2:~/startapp'
+    user = 'sa'
+    password = ''
+    schemas = ['PUBLIC']
+    locations = ["filesystem:$project.projectDir/src/main/resources/db/migration"]
 }
 
 task wrapper(type: Wrapper) {
     gradleVersion = "2.14.1"
 }
+
+generateDbShemaSource.dependsOn flywayMigrate

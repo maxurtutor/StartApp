@@ -1,0 +1,13 @@
+INSERT INTO PROJECTS (PROJECT_ID, NAME)
+VALUES('pr1', 'First project');
+
+INSERT INTO PROJECTS (PROJECT_ID, NAME)
+VALUES('pr2', 'Second project');
+
+INSERT INTO ISSUES (ISSUE_ID, PROJECT_ID, NAME, DESCRIPTION)
+VALUES('iss1', 'pr1', 'First issue', 'Bla bla bla');
+
+INSERT INTO ISSUES (ISSUE_ID, PROJECT_ID, NAME, DESCRIPTION)
+VALUES('iss2', 'pr1', 'Second issue', NULL);
+
+

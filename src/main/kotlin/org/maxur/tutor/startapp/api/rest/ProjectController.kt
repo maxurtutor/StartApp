@@ -82,7 +82,7 @@ class ProjectController(val repository: ProjectRepository) {
         }
 
         inner class BrifIssueResource(issue: Issue): ResourceSupport()  {
-            val title: String = "${issue.id}^ ${issue.name}"
+            val title: String = "${issue.id}: ${issue.name}"
         }
     }
 
