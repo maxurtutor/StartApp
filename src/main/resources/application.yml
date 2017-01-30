@@ -1,0 +1,26 @@
+logging:
+  level:
+    org.jooq.tools: debug
+
+flyway:
+  enabled: true
+  schemas: PUBLIC
+
+spring:
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:~/startapp
+    username: sa
+    password:
+    schema: PUBLIC
+
+  h2.console:
+    enabled: true
+    path: /h2
+
+
+  jooq:
+    sql-dialect: h2
+
+
+
