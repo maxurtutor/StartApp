@@ -5,6 +5,8 @@ import org.maxur.tutor.startapp.domain.Project
 import org.maxur.tutor.startapp.domain.ProjectRepository
 import org.springframework.hateoas.ExposesResourceFor
 import org.springframework.hateoas.ResourceSupport
+import org.springframework.hateoas.Resources
+import org.springframework.hateoas.core.Relation
 import org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpStatus
@@ -14,7 +16,6 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseBody
-
 
 
 /**
@@ -31,8 +32,8 @@ class ProjectController(val repository: ProjectRepository) {
 
     @ResponseBody
     @GetMapping(produces = arrayOf("application/hal+json"))
-    fun allProjects(): ProjectsResource {
-        val resource = ProjectsResource(repository.findAll().map { this.brief(it) })
+    fun allProjects(): Resources<BriefProjectResource> {
+        val resource = Resources(repository.findAll().map { this.brief(it) })
         resource.add(linkTo(ProjectController::class.java).withSelfRel())
         return resource
     }
@@ -42,9 +43,6 @@ class ProjectController(val repository: ProjectRepository) {
         val project = repository.findOne(id) ?: return ResponseEntity(HttpStatus.NOT_FOUND)
         return ResponseEntity(full(project), HttpStatus.OK)
     }
-
-    @Suppress("unused")
-    class ProjectsResource(val projects: List<BriefProjectResource>) : ResourceSupport()
 
     private fun brief(project: Project): BriefProjectResource {
         val resource = BriefProjectResource(project.name)
@@ -56,6 +54,7 @@ class ProjectController(val repository: ProjectRepository) {
     }
 
     @Suppress("unused")
+    @Relation(collectionRelation = "projects")
     inner class BriefProjectResource(val name: String): ResourceSupport()
 
     private fun full(project: Project): FullProjectResource {
@@ -70,7 +69,7 @@ class ProjectController(val repository: ProjectRepository) {
     @Suppress("unused")
     inner class FullProjectResource(project: Project): ResourceSupport() {
         val name: String = project.name
-        val issues: List<BrifIssueResource> = project.issues.map { brief(it) }
+        val issues: Resources<BrifIssueResource> = Resources(project.issues.map { brief(it) })
 
         private fun brief(issue: Issue): BrifIssueResource {
             val resource = BrifIssueResource(issue)
@@ -81,6 +80,7 @@ class ProjectController(val repository: ProjectRepository) {
             return resource
         }
 
+        @Relation(collectionRelation = "issues")
         inner class BrifIssueResource(issue: Issue): ResourceSupport()  {
             val title: String = "${issue.id}: ${issue.name}"
         }
