@@ -27,7 +27,14 @@ open class IssueRepository(val dsl: DSLContext) {
     fun findOne(id: String): Issue? =
             select.where(ISSUES.ISSUE_ID.eq(id))
                     .fetchOneInto(Issues::class.java)
-                    ?.let { record -> Issue(record.issueId, record.name, record.description)}
+                    ?.let { record -> Issue(record.issueId, record.name, record.description, record.projectId)}
+
+    fun add(issue: Issue) {
+        dsl.insertInto(ISSUES, ISSUES.ISSUE_ID, ISSUES.NAME, ISSUES.DESCRIPTION, ISSUES.PROJECT_ID)
+                .values(issue.id, issue.name, issue.description, issue.projectId)
+                .execute()
+
+    }
 
 
 }
