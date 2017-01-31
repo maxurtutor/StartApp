@@ -58,6 +58,7 @@ dependencies {
     runtime "org.springframework.boot:spring-boot-devtools"
     //data
     compile "org.springframework.boot:spring-boot-starter-jooq"
+    compile "org.springframework.boot:spring-boot-starter-actuator"
     compile "org.flywaydb:flyway-core"
     runtime "com.h2database:h2"
     //rest
