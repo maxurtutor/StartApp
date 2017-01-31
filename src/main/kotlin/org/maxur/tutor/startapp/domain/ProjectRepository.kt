@@ -58,7 +58,7 @@ open class ProjectRepository(val dsl: DSLContext) {
                 .sortAsc(PROJECTS.PROJECT_ID)
                 .into(ISSUES.ISSUE_ID, ISSUES.NAME, ISSUES.DESCRIPTION)
                 .filter { iss -> iss.value1() != null }
-                .map { iss -> Issue(iss.value1(), iss.value2(), iss.value3()) }
+                .map { iss -> Issue(iss.value1(), iss.value2(), iss.value3(), project.value1()) }
                 .toList()
                 .orEmpty()
         return Project(project.value1(), project.value2(), issues)
